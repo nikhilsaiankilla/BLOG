@@ -1,5 +1,5 @@
 const { db } = require("./../config/db");
-
+const moment = require("moment");
 //FETCH ALL POSTS
 
 const getAllPostsController = async (req, res) => {
@@ -105,11 +105,120 @@ const deletePostController = async (req, res) => {
 
 // UPLOAD POST
 
-const uploadPostController = async (req, res) => {};
+const uploadPostController = async (req, res) => {
+  //FIND USER
+
+  const q = "SELECT * FROM users WHERE id = ?";
+
+  db.query(q, [req.userId], (userErr, userData) => {
+    if (userErr)
+      return res.status(500).send({
+        message: "something went wrong",
+        err: userErr,
+      });
+
+    const uploadQuery =
+      "INSERT INTO posts (title, `desc`, uid, category, image, date) VALUES (?,?,?,?,?,?)";
+
+    const { title, desc, category, image } = req.body;
+
+    if (!title || !desc || !category || !image) {
+      return res.status(400).send({
+        message: "required all fields",
+      });
+    }
+
+    const date = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss");
+
+    db.query(
+      uploadQuery,
+      [title, desc, req.userId, category, image, date],
+      (err, data) => {
+        if (err)
+          return res.status(500).send({
+            message: "something went wrong",
+            err: err,
+          });
+
+        return res.status(200).send({
+          message: "successfully uploaded",
+          data: data,
+        });
+      }
+    );
+  });
+};
 
 //UPDATE POST
 
-const updatePostController = async (req, res) => {};
+const updatePostController = async (req, res) => {
+  try {
+    const q = "SELECT * FROM users WHERE id = ?";
+
+    db.query(q, [req.userId], (userErr, userData) => {
+      if (userErr) {
+        return res.status(500).send({
+          message: "Something went wrong while fetching the user.",
+          error: userErr,
+        });
+      }
+
+      const { title, desc, category, image } = req.body;
+      const { id } = req.params;
+
+      const date = moment(Date.now()).format("YYYY-MM-DD HH:mm:ss");
+
+      const updates = [];
+      const values = [];
+
+      if (title) {
+        updates.push("title = ?");
+        values.push(title);
+      }
+      if (desc) {
+        updates.push("`desc` = ?");
+        values.push(desc);
+      }
+      if (category) {
+        updates.push("category = ?");
+        values.push(category);
+      }
+      if (image) {
+        updates.push("image = ?");
+        values.push(image);
+      }
+
+      if (updates.length === 0) {
+        return res.status(400).send({
+          message: "No fields to update.",
+        });
+      }
+
+      values.push(date, id);
+      const query = `UPDATE posts SET ${updates.join(
+        ", "
+      )}, date = ? WHERE id = ?`;
+
+      db.query(query, values, (err, updateData) => {
+        if (err) {
+          return res.status(500).send({
+            message: "Something went wrong while updating the post.",
+            error: err,
+          });
+        }
+
+        return res.status(200).send({
+          message: "Updated successfully.",
+        });
+      });
+    });
+  } catch (err) {
+    return res.status(500).send({
+      message: "An unexpected error occurred.",
+      error: err,
+    });
+  }
+};
 
 module.exports = {
   getAllPostsController,

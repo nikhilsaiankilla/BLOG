@@ -18,10 +18,10 @@ router.get("/", getAllPostsController);
 router.get("/:id", getPostController);
 
 //UPLOAD POST
-router.post("/upload", uploadPostController);
+router.post("/upload", authMiddleware, uploadPostController);
 
 // UPDATE POST
-router.put("/update/:id", updatePostController);
+router.put("/update/:id", authMiddleware, updatePostController);
 
 // DELETE SINGLE POST
 router.delete("/delete/:id", authMiddleware, deletePostController);
