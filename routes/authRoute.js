@@ -23,12 +23,12 @@ router.post("/login", userLoginController);
 router.post("/logout", userLogoutController);
 
 //CHANGE PASSWORD
-router.post("/changePassword", authMiddleware, userChangePasswordController);
+router.put("/changePassword", authMiddleware, userChangePasswordController);
 
 //DELETE ACCOUNT
 router.delete("/delete", authMiddleware, deleteAccountContoller);
 
 //RESET PASSWORD
-router.post("/resetPassword", authMiddleware, resetPasswordController);
+router.put("/resetPassword", authMiddleware, resetPasswordController);
 
 module.exports = router;

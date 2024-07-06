@@ -73,7 +73,7 @@ const userLoginController = async (req, res) => {
       {
         userId: user.id,
       },
-      "Nikhil0146",
+      process.env.JWT_SECURITY,
       { expiresIn: "1h" }
     );
 
@@ -121,7 +121,7 @@ const userChangePasswordController = async (req, res) => {
   if (oldPassword === newPassword) {
     return res.status(400).send({
       status: false,
-      message: "enter new password",
+      message: "old and new password are same",
     });
   }
 
@@ -226,7 +226,7 @@ const resetPasswordController = async (req, res) => {
             error: updateErr,
           });
 
-        return res.status(500).send({
+        return res.status(200).send({
           status: true,
           message: "password reset successfully",
         });
@@ -271,11 +271,10 @@ const deleteAccountContoller = async (req, res) => {
               message: err,
             });
 
-          if (data)
-            return res.status(200).send({
-              status: true,
-              message: "deleted successfully",
-            });
+          return res.status(200).send({
+            status: true,
+            message: "deleted successfully",
+          });
         });
       }
     });
