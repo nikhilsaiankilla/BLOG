@@ -16,5 +16,5 @@ app.use("/v1/api/users", require("./routes/userRoute"));
 app.use("/v1/api/posts", require("./routes/postRoute"));
 
 app.listen(process.env.PORT || 8000, () => {
-  console.log("server started at port 8000");
+  console.log(`server started at port ${process.env.PORT || 8000}`);
 });
