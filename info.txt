@@ -1,0 +1,2 @@
+Hosted on : https://dashboard.render.com/web/srv-cq5252uehbks73biaqeg/events
+DB Hosted on : https://console.aiven.io/account/a4c5c1e4c181/project/nikhilsaiankilla-744b/services/myblogs-db-24/overview
